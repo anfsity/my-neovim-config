@@ -9,9 +9,9 @@ local cpp_flags = {
   "-O2",
   "-Wall",
   "-Wextra",
-  "-fsanitize=address",
-  "-fsanitize=undefined",
-  "-D_GLIBCXX_DEBUG", -- 比赛提交时考虑移除这个和 sanitize 标志以获得最佳性能
+  -- "-fsanitize=address",
+  -- "-fsanitize=undefined",
+  -- "-D_GLIBCXX_DEBUG", -- 比赛提交时考虑移除这个和 sanitize 标志以获得最佳性能
   "$(FNAME)",         -- 输入源文件名
   "-o",
   "$(FNOEXT)"         -- 输出可执行文件 (无后缀)
@@ -70,7 +70,7 @@ require('competitest').setup {
         -- 默认快捷键通常够用，可参考 README 自定义
     },
   },
-  multiple_testing = -1,       -- 自动决定并发测试数量 (充分利用 CPU)
+  multiple_testing = 2,       -- 自动决定并发测试数量 (充分利用 CPU)
   maximum_time = 3000,         -- 单个测试用例最大运行时间 (3000ms = 3s)
   output_compare_method = "squish", -- 比较输出时忽略多余空格和换行 (对 CP 很实用)
   view_output_diff = true,     -- 在输出窗口默认显示 diff
