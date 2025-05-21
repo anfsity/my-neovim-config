@@ -14,7 +14,6 @@ local packer_bootstrap = ensure_packer()
 
 -- 保存此文件自动更新安装软件
 -- 注意PackerCompile改成了PackerSync
--- plugins.lua改成了plugins-setup.lua，适应本地文件名字
 vim.cmd([[
   augroup packer_user_config
     autocmd!
@@ -93,9 +92,9 @@ return require('packer').startup(function(use)
   use({
     'MeanderingProgrammer/render-markdown.nvim',
     after = { 'nvim-treesitter' },
-    -- requires = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
-    requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
-    requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+    -- requires = { 'echasnovski/mini.nvim', opt = true },
+    -- requires = { 'echasnovski/mini.icons', opt = true },
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     config = function()
       require('render-markdown').setup({})
     end,

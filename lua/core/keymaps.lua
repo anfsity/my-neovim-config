@@ -38,8 +38,6 @@ vim.api.nvim_create_autocmd('FileType', {
     pattern = 'cpp', -- 匹配 C++ 文件类型
     group = competitest_cpp_group,
     callback = function()
-        -- 使用 <localleader> (你设置为 " ") 作为前缀
-        -- 注意：我们使用你确认过的命令名 "ComptiTest"
 
         -- 运行测试 (编译 + 运行)
         vim.keymap.set('n', '<localleader>r', '<Cmd>CompetiTest run<CR>',
@@ -69,7 +67,6 @@ vim.api.nvim_create_autocmd('FileType', {
         -- vim.keymap.set('n', '<localleader>rx', '<Cmd>ComptiTest receive stop<CR>',
         --     { desc = '[C]ompetiTest Stop [R]eceiving', silent = true, buffer = true })
 
-        -- 你可以根据需要添加或修改其他快捷键
         -- vim.notify("CompetiTest C++ keymaps loaded!", vim.log.levels.INFO) -- 可以加个通知确认加载
     end,
 })

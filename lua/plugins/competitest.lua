@@ -1,9 +1,7 @@
--- 推荐的 C++ 编译参数 (包含调试和警告)
--- -std=c++17: 使用 C++17 标准 (可改为 c++14, c++20)
 -- -O2: 优化级别2
 -- -Wall -Wextra: 显示所有常用和额外警告
--- -fsanitize=address -fsanitize=undefined: 运行时内存和未定义行为检查 (调试时非常有帮助!)
--- -D_GLIBCXX_DEBUG: 开启 GNU C++ 库的调试模式 (会变慢，但能检查更多 STL 错误，比赛时可能需去掉)
+-- -fsanitize=address -fsanitize=undefined: 运行时内存和未定义行为检查
+-- -D_GLIBCXX_DEBUG: 开启 GNU C++ 库的调试模式 (会变慢，但能检查更多 STL 错误)
 local cpp_flags = {
   "-std=c++23",
   "-O2",
@@ -17,7 +15,7 @@ local cpp_flags = {
   "$(FNOEXT)"         -- 输出可执行文件 (无后缀)
 }
 
--- 你的 C++ 模板文件路径 (如果不需要，可以注释掉 template_file 那行)
+-- C++ 模板文件路径 (如果不需要，可以注释掉 template_file 那行)
 local cpp_template_path = vim.fn.expand("~/Algorithms/AlgorithmsTemplates/template.cpp")
 
 require('competitest').setup {
