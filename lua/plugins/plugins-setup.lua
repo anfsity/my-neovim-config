@@ -92,8 +92,8 @@ return require('packer').startup(function(use)
   use({
     'MeanderingProgrammer/render-markdown.nvim',
     after = { 'nvim-treesitter' },
-    -- requires = { 'echasnovski/mini.nvim', opt = true },
-    -- requires = { 'echasnovski/mini.icons', opt = true },
+    requires = { 'echasnovski/mini.nvim', opt = true },
+    requires = { 'echasnovski/mini.icons', opt = true },
     requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     config = function()
       require('render-markdown').setup({})
