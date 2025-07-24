@@ -7,7 +7,13 @@ vim.g.sonokai_style = 'shusia'
 -- vim.g.sonokai_style = 'espresso'
 
 vim.g.sonokai_transparent_background = 1
+-- require("onedarkpro").setup({
+--   options = {
+--     transparency = true
+--   }
+-- })
 
 -- vim.cmd.colorscheme "catppuccin-mocha"
 local status_ok, _ = pcall(vim.cmd, "colorscheme sonokai") 
+-- local status_ok, _ = pcall(vim.cmd, "colorscheme onedark") 
 

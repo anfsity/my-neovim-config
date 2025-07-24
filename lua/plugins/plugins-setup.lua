@@ -27,6 +27,7 @@ return require('packer').startup(function(use)
   use 'shaunsingh/nord.nvim'
   use 'rose-pine/neovim'
   use 'sainnhe/sonokai'
+  use "olimorris/onedarkpro.nvim"
   use { "catppuccin/nvim", as = "catppuccin" }
 
 
@@ -58,7 +59,13 @@ return require('packer').startup(function(use)
     -- 自动补全
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/cmp-nvim-lsp"
-  use "L3MON4D3/LuaSnip" -- snippets引擎，不装这个自动补全会出问题
+  use({
+	"L3MON4D3/LuaSnip",
+	-- follow latest release.
+	tag = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+	-- install jsregexp (optional!:).
+	run = "make install_jsregexp"
+  })
   use "saadparwaiz1/cmp_luasnip"
   use "rafamadriz/friendly-snippets"
   use "hrsh7th/cmp-path" -- 文件路径
