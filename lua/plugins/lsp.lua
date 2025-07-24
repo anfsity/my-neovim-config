@@ -41,7 +41,7 @@ local capabilities = vim.tbl_deep_extend('force', base_capabilities, {
         }
         -- 这里会自动合并 cmp_nvim_lsp 提供的其他 textDocument capabilities
     }
-    -- 这里会自动合并 cmp_nvim_lsp 提供的 workspace capabilities (如果有的话)
+    -- 这里会自动合并 cmp_nvim_lsp 提供的 workspace capabilities
 })
 
 
@@ -63,15 +63,6 @@ require("lspconfig").clangd.setup {
   },
   filetypes = {"c", "cpp", "objc", "objcpp", "cuda", "proto"},
   init_options = {
-    fallbackFlags = {"-std=c++20"} -- 或者 "-std=gnu++20" 也可以试试
+    fallbackFlags = {"-std=c++23"}
   },
-  -- single_file_support = true,
-  -- settings = {
-  --   fallbackFlags = {
-  --        "-std=c++20"
-  --       }
-  -- },
-  -- root_dir = function()
-  --   return vim.loop.cwd()
-  -- end
 }

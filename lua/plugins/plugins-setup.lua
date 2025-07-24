@@ -24,6 +24,7 @@ vim.cmd([[
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
+-- themes config  
   use 'shaunsingh/nord.nvim'
   use 'rose-pine/neovim'
   use 'sainnhe/sonokai'
@@ -78,11 +79,12 @@ return require('packer').startup(function(use)
   use "akinsho/bufferline.nvim" -- buffer分割线
   use "lewis6991/gitsigns.nvim" -- 左则git提示
 
-  use {
-    'xeluxee/competitest.nvim',
-    requires = 'MunifTanjim/nui.nvim',
+-- remove it 
+  -- use {
+  --   'xeluxee/competitest.nvim',
+  --   requires = 'MunifTanjim/nui.nvim',
     -- config = function() require('competitest').setup() end
-  }
+  -- }
 
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.8',  -- 文件检索

@@ -109,11 +109,6 @@ _G.packer_plugins = {
     path = "/home/anfsity/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
   },
-  ["competitest.nvim"] = {
-    loaded = true,
-    path = "/home/anfsity/.local/share/nvim/site/pack/packer/start/competitest.nvim",
-    url = "https://github.com/xeluxee/competitest.nvim"
-  },
   ["friendly-snippets"] = {
     loaded = true,
     path = "/home/anfsity/.local/share/nvim/site/pack/packer/start/friendly-snippets",
@@ -153,11 +148,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/anfsity/.local/share/nvim/site/pack/packer/start/nord.nvim",
     url = "https://github.com/shaunsingh/nord.nvim"
-  },
-  ["nui.nvim"] = {
-    loaded = true,
-    path = "/home/anfsity/.local/share/nvim/site/pack/packer/start/nui.nvim",
-    url = "https://github.com/MunifTanjim/nui.nvim"
   },
   ["nvim-autopairs"] = {
     loaded = true,
