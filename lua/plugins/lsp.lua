@@ -31,6 +31,16 @@ return {'lsp'}
 end
 })
 
+local on_attach = function(client, bunfr) 
+    local opts = {
+        noremap = true, silent = true, buffer = bunfr
+    }
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+
+    vim.lsp.inlay_hint.enable(true, { bufnr = bunfr })
+end
+
 local base_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local capabilities = vim.tbl_deep_extend('force', base_capabilities, {
@@ -39,27 +49,27 @@ local capabilities = vim.tbl_deep_extend('force', base_capabilities, {
             dynamicRegistration = false,
             lineFoldingOnly = true
         }
-        -- 这里会自动合并 cmp_nvim_lsp 提供的其他 textDocument capabilities
     }
-    -- 这里会自动合并 cmp_nvim_lsp 提供的 workspace capabilities
 })
 
 
 -- Lua配置
 require("lspconfig").lua_ls.setup {
   capabilities = capabilities,
+  -- on_attach = on_attach
 }
 
 -- C++配置
 require("lspconfig").clangd.setup {
   capabilities = capabilities,
+  -- on_attach = on_attach,
   cmd = {
     "clangd",
     "--background-index",
     "--clang-tidy",
     "--header-insertion=never",
     "--completion-style=detailed",
-    "--query-driver=/usr/bin/g++"
+    "--query-driver=/usr/bin/clang++"
   },
   filetypes = {"c", "cpp", "objc", "objcpp", "cuda", "proto"},
   init_options = {
