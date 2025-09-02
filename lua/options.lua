@@ -1,6 +1,18 @@
 require "nvchad.options"
 
--- add yours here!
+local o = vim.o
+local opt = vim.opt
+-------------------- options ---------------------
 
--- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
+-- Common
+o.cursorlineopt ='both'
+
+o.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+-- Indenting
+o.shiftwidth = 4
+o.showmode = true
+o.tabstop = 4
+o.softtabstop = 4
+
