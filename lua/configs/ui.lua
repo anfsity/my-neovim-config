@@ -7,6 +7,11 @@ M.nvim_tree = {
         git_ignored = false,
         custom = { "\\.git", "\\.cache" },
     },
+
+    renderer = {
+        root_folder_label = ":~:s?$?/..?",
+    },
+
 }
 
 return M
