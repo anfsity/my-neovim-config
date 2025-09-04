@@ -14,7 +14,8 @@ M.base46 = {
     -- },
 }
 
--- M.nvdash = { load_on_startup = true }
+M.nvdash = { load_on_startup = true }
+
 M.ui = {
     statusline = {
         order = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "encoding", "eol", "lsp", "cwd", "cursor" },
