@@ -1,6 +1,6 @@
 local M = {}
 
--- @type table
+--- @type table
 M.nvim_tree = {
     filters = {
         dotfiles = false,

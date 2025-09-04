@@ -1,4 +1,4 @@
--- @type LazySpec
+--- @type LazySpec
 return {
     "stevearc/conform.nvim",
     opts = function ()
