@@ -4,6 +4,7 @@ return {
         "nvim-tree/nvim-tree.lua",
         opts = require("configs.ui").nvim_tree,
     },
+
     { -- Breadcrumbs
         "Bekaboo/dropbar.nvim",
         lazy = false,
@@ -12,4 +13,9 @@ return {
             "nvim-telescope/telescope-fzf-native.nvim",
         },
     },
+
+    -- { -- Set consistent terminal background color with theme
+    --     "typicode/bg.nvim",
+    --     lazy = false,
+    -- },
 }
