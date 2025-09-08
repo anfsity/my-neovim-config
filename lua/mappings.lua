@@ -21,8 +21,10 @@ map("i", "<C-/>", "<Esc>gcc^i", { desc = "comment toggle", remap = true })
 -- visual studio code like keymaps
 
 map("n", "gb", "<C-o>", { desc = "jump back" })
-map("n", "gh", "<cmd> lua vim.lsp.buf.hover() <cr>", { desc = "LSP hover" })map("n", "ge", "<cmd> lua vim.diagnostic.open_float() <cr>", { desc = "LSP show diagonstics" })
-map("n", "ge", "<cmd> lua vim.diagnostic.open_float() <cr>", { desc = "LSP show diagonstics" })
+map("n", "gh", "<cmd> lua vim.lsp.buf.hover() <cr>", { desc = "LSP hover" })map("n", "ge", "<cmd> lua vim.diagnostic.open_float() <cr>", { desc = "LSP show diagnostics" })
+map("n", "ge", "<cmd> lua vim.diagnostic.open_float() <cr>", { desc = "LSP show diagnostics" })
 
 map({ "n", "i" }, "<A-j>", "<cmd> :m +1 <cr>", { desc = "move one line down "})
 map({ "n", "i" }, "<A-k>", "<cmd> :m -2 <cr>", { desc = "move one line up "})
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selected lines up" })
