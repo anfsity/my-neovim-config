@@ -343,10 +343,10 @@ TARGETS = $(SRCS:.cpp=)
 all: $(TARGETS)
 
 $(TARGETS): %: %.cpp
-    $(CXX) $(CXXFLAGS) $< -o $@
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:
-    rm -f $(TARGETS)
+	rm -f $(TARGETS)
 
 .PHONY: all clean
 {}
