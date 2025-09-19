@@ -11,7 +11,7 @@ o.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Indenting
-o.expandtab = false
+-- o.expandtab = false
 o.shiftwidth = 4
 o.showmode = true
 o.tabstop = 4

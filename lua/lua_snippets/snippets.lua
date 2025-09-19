@@ -16,16 +16,7 @@ luaSnip.add_snippets("cpp", {
         { trig = "demo", name = "Competitive Programming Template", dscr = "A template for competitive programming. "},
         fmt(
             [[
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <numeric>
-#include <queue>
-#include <set>
-#include <map>
-#include <cmath>
-#include <ranges>
+#include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
 #include "debug.hpp"
@@ -33,28 +24,23 @@ luaSnip.add_snippets("cpp", {
 #define debug(...)
 #endif
 
-using std::cin;
-using std::cout;
 using i64 = long long;
 using u64 = unsigned long long;
 using i128 = __int128;
 using u128 = unsigned __int128;
-namespace views = std::views;
-namespace ranges = std::ranges;
-#define nl '\n'
 constexpr int mod = 1e9 + 7;
 // constexpr int mod = 998244353;
 
-void solve() {{
+void solve () {{
     {}
 }}
 
 int main() {{
     std::ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    std::cin.tie(nullptr);
 
     int t = 1;
-    // cin >> t;
+    // std::cin >> t;
     while (t--) {{
         solve();
     }}
