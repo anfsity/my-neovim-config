@@ -26,7 +26,7 @@ luaSnip.add_snippets("cpp", {
 
 using i64 = long long;
 using i128 = __int128;
-constexpr int mod = 1e9 + 7;
+// constexpr int mod = 1e9 + 7;
 // constexpr int mod = 998244353;
 
 void solve () {{
@@ -93,7 +93,7 @@ int main() {{
 			"        s += '-';",
 			"    }",
 			"",
-			"    std::reverse(s.begin(), s.end());",
+			"    std::ranges::reverse(s);",
 			"    return os << s;",
 			"}",
 			"",
