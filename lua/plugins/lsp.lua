@@ -2,8 +2,8 @@
 return {
     "neovim/nvim-lspconfig",
     lazy = false,
-    config = function ()
-        require("configs.lsp")
+    config = function()
+        require "configs.lsp"
     end,
 
     {
@@ -13,15 +13,19 @@ return {
 
     {
         "mason-org/mason-lspconfig.nvim",
-        lazy = false;
+        lazy = false,
         dependencies = {
             "neovim/nvim-lspconfig",
             { "mason-org/mason.nvim", opts = {} },
             "mason-org/mason.nvim",
         },
-        opts = function ()
-            require("configs.lsp")
-            return {}
+        opts = function()
+            require "configs.lsp"
+            return {
+                automatic_enable = {
+                    exclude = { "clangd" },
+                },
+            }
         end,
-    }
+    },
 }

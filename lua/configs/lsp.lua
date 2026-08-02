@@ -6,16 +6,18 @@
 -- read :h vim.lsp.config for changing options of lsp servers
 
 local mr = require "mason-registry"
+local mason_platform = require "mason-core.platform"
 
 local nvlsp = require "nvchad.configs.lspconfig"
+local ts_parsers = require "nvim-treesitter.parsers"
 
 local eagerly_installed_langs = { "Cpp", "Lua", "Markdown", "markdown_inline" }
 local ensure_installed = {
     ["*"] = { "typos_lsp" },
     Bash = { "bashls", "shellcheck", "shfmt" },
-    C = { "clangd", "clang-format" },
+    C = {},
     CMake = { "cmake" },
-    Cpp = { "clangd", "clang-format" },
+    Cpp = {},
     CSS = { "cssls", "stylelint_lsp", "tailwindcss" },
     Dart = { "dartls" },
     Go = { "gopls", "goimports", "golangci_lint_ls" },
@@ -33,10 +35,16 @@ local ensure_installed = {
     TypeScript = { "vtsls", "prettierd", "eslint_d", "eslint", "angularls", "stylelint_lsp", "tailwindcss" },
     TypeScriptReact = { "vtsls", "prettierd", "eslint_d", "eslint", "stylelint_lsp", "tailwindcss" },
     Vim = { "vimls" },
-    Vue = { "volar", "stylelint_lsp", "tailwindcss" },
+    Vue = { "vue_ls", "stylelint_lsp", "tailwindcss" },
     XML = { "lemminx" },
     YAML = { "yamlls", "spectral" },
 }
+
+-- Prefer the system formatter instead of creating a second Mason copy.
+if vim.fn.executable "clang-format" ~= 1 then
+    ensure_installed.C = { "clang-format" }
+    ensure_installed.Cpp = { "clang-format" }
+end
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
@@ -46,16 +54,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.lsp.config("*", {
     on_attach = function(client, bufnr)
-        if client.supports_method("textDocument/inlayHint") or client.server_capabilities.inlayHintProvider then
+        if client:supports_method("textDocument/inlayHint", bufnr) or client.server_capabilities.inlayHintProvider then
             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
         end
 
-        if client.supports_method("textDocument/codeLens", { bufnr = bufnr }) then
-            vim.lsp.codelens.refresh { bufnr = bufnr }
+        if client:supports_method("textDocument/codeLens", bufnr) then
+            vim.lsp.codelens.enable(true, { bufnr = bufnr })
             vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave" }, {
                 buffer = bufnr,
                 callback = function()
-                    vim.lsp.codelens.refresh { bufnr = bufnr }
+                    vim.lsp.codelens.enable(true, { bufnr = bufnr })
                 end,
             })
         end
@@ -123,7 +131,7 @@ vim.lsp.config("lua_ls", {
 --- Start: cpp config ---
 
 vim.lsp.config("clangd", {
-    on_attach = function (_, bufnr)
+    on_attach = function(_, bufnr)
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end,
 
@@ -135,15 +143,23 @@ vim.lsp.config("clangd", {
         "--j=12",
         "--background-index",
         "--header-insertion=never",
-        "--inlay-hints=true",
-        "--fallback-style=LLVM, indent=4",
-    }
+        "--fallback-style=LLVM",
+    },
 })
+
+vim.lsp.enable "clangd"
+-- clangd now uses the standard general.positionEncodings capability.
+vim.lsp.config.clangd.capabilities.offsetEncoding = nil
 
 --- End: cpp config ---
 
 --- Start: Implementation of auto-installation of language servers ---
 local ensure_lang_installed = (function()
+    -- Mason cannot finish asynchronous installs after a headless Neovim exits.
+    if mason_platform.is_headless then
+        return function(_) end
+    end
+
     local mason_registry_refreshing = true
     mr.refresh(function()
         mason_registry_refreshing = false
@@ -166,34 +182,14 @@ local ensure_lang_installed = (function()
     end)
 
     -- Checks if parser is installed with nvim-treesitter
-    -- See: https://github.com/nvim-treesitter/nvim-treesitter/blob/master/lua/nvim-treesitter/install.lua
+    -- See: https://github.com/nvim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/install.lua
     ---@param lang string
     ---@return boolean
     local is_treesitter_installed = function(lang)
-        local clean_path = function(input)
-            local path = vim.fn.fnamemodify(input, ":p")
-            if vim.fn.has "win32" == 1 then
-                path = path:gsub("/", "\\")
-            end
-            return path
-        end
-
-        local matched_parsers = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", true) or {}
-        local install_dir = require("nvim-treesitter.configs").get_parser_install_dir()
-        if not install_dir then
-            return false
-        end
-        install_dir = clean_path(install_dir)
-        for _, path in ipairs(matched_parsers) do
-            local abspath = clean_path(path)
-            if vim.startswith(abspath, install_dir) then
-                return true
-            end
-        end
-        return false
+        return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", true) > 0
     end
 
-    local find_lspconfig = (function()
+    local find_lsp_config = (function()
         ---@type table<string, any>
         local cache = {}
 
@@ -203,8 +199,10 @@ local ensure_lang_installed = (function()
                 return cache[server_name]
             end
 
-            local found, config = pcall(require, "lspconfig.configs." .. server_name)
-            if found then
+            local found, config = pcall(function()
+                return vim.lsp.config[server_name]
+            end)
+            if found and config then
                 cache[server_name] = config
                 return config
             end
@@ -223,7 +221,7 @@ local ensure_lang_installed = (function()
 
         -- Guess type of the package
         if #parts == 1 then
-            if find_lspconfig(name) then
+            if find_lsp_config(name) then
                 if require("mason-lspconfig").get_mappings().lspconfig_to_package[name] then
                     return "mason-lspconfig", require("mason-lspconfig").get_mappings().lspconfig_to_package[name]
                 end
@@ -232,7 +230,7 @@ local ensure_lang_installed = (function()
             if require("mason-lspconfig").get_mappings().package_to_lspconfig[name] then
                 return "mason-lspconfig", name
             end
-            if require("nvim-treesitter.parsers").get_parser_configs()[name] then
+            if ts_parsers[name] then
                 return "treesitter", name
             end
             return "mason", name
@@ -251,7 +249,7 @@ local ensure_lang_installed = (function()
                 show_error("[LSP] " .. message)
                 error(message)
             end
-            if type == "lspconfig" and not find_lspconfig(parts[2]) then
+            if type == "lspconfig" and not find_lsp_config(parts[2]) then
                 local message = string.format(
                     "Failed to parse package name '%s': '%s' is not a valid lspconfig server",
                     name,
@@ -260,7 +258,7 @@ local ensure_lang_installed = (function()
                 show_error("[LSP] " .. message)
                 error(message)
             end
-            if type == "treesitter" and not require("nvim-treesitter.parsers").get_parser_configs()[parts[2]] then
+            if type == "treesitter" and not ts_parsers[parts[2]] then
                 local message = string.format(
                     "Failed to parse package name '%s': '%s' is not a valid treesitter parser",
                     name,
@@ -310,7 +308,8 @@ local ensure_lang_installed = (function()
 
         -- Try adding treesitter to install list if possible
         ensure_installed[lang] = ensure_installed[lang] or {}
-        local treesitter_available = require("nvim-treesitter.parsers").get_parser_configs()[lang:lower()]
+        -- Parser compilation requires the optional tree-sitter CLI.
+        local treesitter_available = vim.fn.executable "tree-sitter" == 1 and ts_parsers[lang:lower()]
         if treesitter_available then
             local to_add = "ts/" .. lang:lower()
             for _, unparsed_name in ipairs(ensure_installed[lang]) do
@@ -339,11 +338,12 @@ local ensure_lang_installed = (function()
 
                 if type == "lspconfig" then
                     local setup = function()
-                        lspconfig[name].setup {
+                        vim.lsp.config(name, {
                             on_attach = nvlsp.on_attach,
                             on_init = nvlsp.on_init,
                             capabilities = nvlsp.capabilities,
-                        }
+                        })
+                        vim.lsp.enable(name)
                     end
 
                     if #queued_pkgs > 0 then
@@ -404,8 +404,6 @@ local ensure_lang_installed = (function()
         ---@param i integer
         local function install_pkg(i)
             if i > #queued_pkgs then
-                vim.cmd "LspStart"
-
                 if cb then
                     cb()
                 end
@@ -466,7 +464,7 @@ local ensure_lang_installed = (function()
 
             if desc.type == "lspconfig" then
                 show(
-                    "[LSP] [%s/%s] Setting up lspconfig '%s'%s...",
+                    "[LSP] [%s/%s] Setting up vim.lsp '%s'%s...",
                     i,
                     #queued_pkgs,
                     lang == "*" and desc.name or " for " .. lang
@@ -475,7 +473,7 @@ local ensure_lang_installed = (function()
                     desc.setup()
                 end
                 show(
-                    "[LSP] [%s/%s] Set up lspconfig '%s'%s",
+                    "[LSP] [%s/%s] Set up vim.lsp '%s'%s",
                     i,
                     #queued_pkgs,
                     lang == "*" and desc.name or " for " .. lang
@@ -538,7 +536,7 @@ local ensure_lang_installed = (function()
             end
         end
 
-        if not ensure_installed[lang] and not require("nvim-treesitter.parsers").get_parser_configs()[lang:lower()] then
+        if not ensure_installed[lang] and not ts_parsers[lang:lower()] then
             return
         end
 
